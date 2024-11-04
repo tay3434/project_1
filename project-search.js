@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import "./nasa-image.js";
-export class NasaSearch extends LitElement {
+import "./project-image.js";
+export class ProjectSearch extends LitElement {
   static get properties() {
     return {
       title: { type: String },
@@ -14,7 +14,9 @@ export class NasaSearch extends LitElement {
     return css`
       :host {
         display: block;
+        width: 100%;
       }
+    
       :host([loading]) .results {
         opacity: 0.1;
         visibility: hidden;
@@ -23,15 +25,17 @@ export class NasaSearch extends LitElement {
       .results {
         visibility: visible;
         height: 100%;
+        width: 100%;
         opacity: 1;
         transition-delay: .5s;
         transition: .5s all ease-in-out;
-      }
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 16px;
+        box-sizing: border-box;
+        padding: 20px;
 
-      details {
-        margin: 16px;
-        padding: 16px;
-        background-color: blue;
       }
       summary {
         font-size: 24px;
@@ -43,6 +47,14 @@ export class NasaSearch extends LitElement {
         font-size: 20px;
         line-height: 40px;
         width: 100%;
+        margin-bottom: 20px;
+      }
+      details {
+        margin: 16px;
+        padding: 16px;
+        background-color: navy;
+        border: 4px solid gray;
+        border-radius: 8px;
       }
     `;
   }
@@ -59,17 +71,17 @@ export class NasaSearch extends LitElement {
     return html`
     <h2>${this.title}</h2>
     <details open>
-      <summary>Search inputs</summary>
+      <summary>HAX SITE</summary>
       <div>
-        <input id="input" placeholder="Search NASA images" @input="${this.inputChanged}" />
+        <input id="input" placeholder="Search HAX the web" @input="${this.inputChanged}" />
       </div>
     </details>
     <div class="results">
       ${this.items.map((item, index) => html`
-      <nasa-image
+      <project-image
         source="${item.links[0].href}"
         title="${item.data[0].title}"
-      ></nasa-image>
+      ></project-image>
       `)}
     </div>
     `;
@@ -105,7 +117,7 @@ export class NasaSearch extends LitElement {
   }
 
   static get tag() {
-    return 'nasa-search';
+    return 'project-search';
   }
 }
-customElements.define(NasaSearch.tag, NasaSearch);
+customElements.define(ProjectSearch.tag, ProjectSearch);
