@@ -1,12 +1,24 @@
 import { LitElement, html, css } from 'lit';
+import { DDDSuper } from "haxtheweb/d-d-d/d-d-d.js";
 import "./project-image.js";
-export class ProjectSearch extends LitElement {
+
+export class ProjectSearch extends DDDSuper(LitElement)  {
+  constructor() {
+    super();
+    this.value = '';
+    this.title = '';
+    this.loading = false;
+    this.items = [];
+    this.jsonUrl = '';
+  }
+
   static get properties() {
     return {
       title: { type: String },
       loading: { type: Boolean, reflect: true },
-      items: { type: Array, },
+      items: { type: Array },
       value: { type: String },
+      jsonUrl: { type: String, attribute: 'json-url'}
     };
   }
 
@@ -16,104 +28,91 @@ export class ProjectSearch extends LitElement {
         display: block;
         width: 100%;
       }
-    
-      :host([loading]) .results {
-        opacity: 0.1;
-        visibility: hidden;
-        height: 1px;
-      }
       .results {
-        visibility: visible;
-        height: 100%;
-        width: 100%;
-        opacity: 1;
-        transition-delay: .5s;
-        transition: .5s all ease-in-out;
+        opacity: ${this.loading ? 0.1 : 1};
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
         gap: 16px;
         box-sizing: border-box;
         padding: 20px;
-
       }
-      summary {
+      .search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 24px;
+        border: 1px solid pink;
+        padding: 4px 12px;
+        max-width: 600px;
+        margin: 10px auto; 
+      }
+      .search-icon {
+        margin-right: 16px;
         font-size: 24px;
-        padding: 8px;
-        color: white;
-        font-size: 42px;
+        cursor: pointer;
       }
-      input {
-        font-size: 20px;
-        line-height: 40px;
-        width: 100%;
-        margin-bottom: 20px;
+      .search-input {
+        flex: 1;
+        font-size: 16px;
+        border: none;
       }
-      details {
-        margin: 16px;
-        padding: 16px;
-        background-color: navy;
-        border: 4px solid gray;
-        border-radius: 8px;
+      .search-input:focus {
+        outline: none;
       }
     `;
-  }
-
-  constructor() {
-    super();
-    this.value = null;
-    this.title = '';
-    this.loading = false;
-    this.items = [];
   }
 
   render() {
     return html`
-    <h2>${this.title}</h2>
-    <details open>
-      <summary>HAX SITE</summary>
-      <div>
-        <input id="input" placeholder="Search HAX the web" @input="${this.inputChanged}" />
+      <h2>${this.title}</h2>
+      <div class="search-container">
+        <div class="search-icon">🔍</div>
+        <input 
+          id="input" 
+          class="search-input"
+          placeholder="Search HAX the web"
+          @input="${this.inputChanged}" 
+        />
       </div>
-    </details>
-    <div class="results">
-      ${this.items.map((item, index) => html`
-      <project-image
-        source="${item.links[0].href}"
-        title="${item.data[0].title}"
-      ></project-image>
-      `)}
-    </div>
+      <div class="results">
+        ${this.items.map(item => html`
+          <project-image
+            title="${item.title}"
+            description="${item.description}"
+            created="${this.formatDate(item.metadata?.created)}"
+            lastUpdated="${this.formatDate(item.metadata?.updated)}"
+            logo="${item.metadata?.files?.[0]?.url || ''}"
+            slug="${item.slug}"
+          ></project-image>
+        `)}
+      </div>
     `;
   }
 
   inputChanged(e) {
-    this.value = this.shadowRoot.querySelector('#input').value;
+    this.value = e.target.value.trim();
+    this.updateResults(this.value);
   }
-  // life cycle will run when anything defined in `properties` is modified
-  updated(changedProperties) {
-    // see if value changes from user input and is not empty
-    if (changedProperties.has('value') && this.value) {
-      this.updateResults(this.value);
-    }
-    else if (changedProperties.has('value') && !this.value) {
-      this.items = [];
-    }
-    // @debugging purposes only
-    if (changedProperties.has('items') && this.items.length > 0) {
-      console.log(this.items);
+
+  async updateResults(value) {
+    this.loading = true;
+    try {
+      const response = await fetch(this.jsonUrl);
+      const data = await response.json();
+      this.items = data.items.filter(item => 
+        item.title.toLowerCase().includes(value.toLowerCase()) ||
+        item.description.toLowerCase().includes(value.toLowerCase())
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      this.loading = false;
     }
   }
 
-  updateResults(value) {
-    this.loading = true;
-    fetch(`https://images-api.nasa.gov/search?media_type=image&q=${value}`).then(d => d.ok ? d.json(): {}).then(data => {
-      if (data.collection) {
-        this.items = [];
-        this.items = data.collection.items;
-        this.loading = false;
-      }  
-    });
+  formatDate(timestamp) {
+    return timestamp ? new Date(parseInt(timestamp) * 1000).toLocaleDateString() : '';
   }
 
   static get tag() {
