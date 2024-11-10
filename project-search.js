@@ -1,8 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { DDDSuper } from "haxtheweb/d-d-d/d-d-d.js";
 import "./project-image.js";
 
-export class ProjectSearch extends DDDSuper(LitElement)  {
+export class ProjectSearch extends LitElement {
   constructor() {
     super();
     this.value = '';
@@ -119,3 +118,4 @@ export class ProjectSearch extends DDDSuper(LitElement)  {
   }
 }
 customElements.define(ProjectSearch.tag, ProjectSearch);
+

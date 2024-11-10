@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import { DDDSuper } from "haxtheweb/d-d-d/d-d-d.js";
 
-export class Analyzer extends DDDSuper(LitElement) {
+export class Analyzer extends LitElement {
   static get styles() {
     return css`
       .search-container {

@@ -1,7 +1,6 @@
 import { LitElement, html, css } from "lit";
-import { DDDSuper } from "haxtheweb/d-d-d/d-d-d.js";
 
-export class ProjectImage extends DDDSuper(LitElement) {
+export class ProjectImage extends LitElement {
   static get properties() {
     return {
       title: { type: String },
