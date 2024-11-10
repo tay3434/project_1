@@ -34,7 +34,6 @@ export class ProjectSearch extends DDDSuper(LitElement)  {
         flex-wrap: wrap;
         justify-content: space-around;
         gap: 16px;
-        box-sizing: border-box;
         padding: 20px;
       }
       .search-container {

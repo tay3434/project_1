@@ -5,35 +5,36 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="Description" content="Demonstration for project-search">
+  <title>Project Search Demo</title>
   <style>
     :root, html, body {
       margin: 0;
       padding: 0;
     }
     #demo {
-      margin: var(--ddd-spacing-2);
+      margin: 16px;
     }
     project-search {
-      margin: var(--ddd-spacing-2);
-      border: var(--ddd-border-md);
-      border-radius: var(--ddd-radius-lg);
+      margin: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
     project-search:hover {
-      box-shadow: var(--ddd-boxShadow-sm);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     }
     #example {
-      --project-search-font-size: var(--ddd-font-size-l);
-      background-color: var(--ddd-accent-2);
-      color: var(--ddd-primary-17);
+      font-size: 1.25em;
+      background-color: #f0f8ff;
+      color: #333;
     }
   </style>
-  <title>project-search</title>
 </head>
 <body>
   <div id="demo">
-    <h1>project-search</h1>
-    <project-search></project-search>
+    <h1>Project Search</h1>
+    <project-search json-url="https://example.com/projects.json" title="Search Projects"></project-search>
   </div>
   <script type="module" src="./project-search.js"></script>
 </body>
 </html>
+
